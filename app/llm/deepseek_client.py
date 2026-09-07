@@ -7,7 +7,10 @@ API_URL = "https://api.deepseek.com/chat/completions"
 MODEL = "deepseek-v4-flash"
 
 
-def chat_with_deepseek(message: str) -> str:
+def create_chat_completion(
+    messages: list[dict],
+    tools: list[dict] | None = None,
+) -> dict:
     api_key = os.environ.get("DEEPSEEK_API_KEY")
 
     if not api_key:
@@ -20,21 +23,16 @@ def chat_with_deepseek(message: str) -> str:
 
     payload = {
         "model": MODEL,
-        "messages": [
-            {
-                "role": "system",
-                "content": "You are a helpful assistant."
-            },
-            {
-                "role": "user",
-                "content": message
-            }
-        ],
+        "messages": messages,
         "thinking": {
             "type": "disabled"
         },
         "stream": False,
     }
+
+    if tools:
+        payload["tools"] = tools
+        payload["tool_choice"] = "auto"
 
     response = requests.post(
         API_URL,
@@ -47,4 +45,26 @@ def chat_with_deepseek(message: str) -> str:
 
     data = response.json()
 
-    return data["choices"][0]["message"]["content"]
+    choices = data.get("choices")
+
+    if not choices:
+        raise RuntimeError("DeepSeek API 未返回 choices")
+
+    return choices[0]["message"]
+
+
+def chat_with_deepseek(message: str) -> str:
+    messages = [
+        {
+            "role": "system",
+            "content": "You are a helpful assistant.",
+        },
+        {
+            "role": "user",
+            "content": message,
+        },
+    ]
+
+    result = create_chat_completion(messages)
+
+    return result.get("content") or ""

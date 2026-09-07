@@ -1,10 +1,22 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
-from app.llm.deepseek_client import chat_with_deepseek
+from app.agent.agent import run_agent
 from app.schemas.chat import ChatRequest, ChatResponse
 
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/health")
@@ -14,6 +26,8 @@ def health():
 
 @app.post("/chat", response_model=ChatResponse)
 def chat(request: ChatRequest):
-    reply = chat_with_deepseek(request.message)
+    reply = run_agent(request.message)
 
-    return ChatResponse(reply=reply)
+    return ChatResponse(
+        reply=reply
+    )
