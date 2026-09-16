@@ -1,6 +1,6 @@
 # Blog Agent
 
-FastAPI backend for the JaoHun Blog AI assistant. The service exposes a small HTTP API, calls DeepSeek with tool calling enabled, and answers questions from real blog data stored in the companion Next.js blog repository.
+JaoHun的智能AI博客助手的FastAPI后端。该服务公开了一个小型HTTP API，启用了工具调用功能，并调用DeepSeek，用于回答来自个人Next.js博客代码库中存储的真实博客数据的问题。
 
 ## Status
 
