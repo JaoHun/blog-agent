@@ -94,11 +94,17 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-Configure environment variables:
+Create a local `.env` file from the example:
 
 ```powershell
-$env:DEEPSEEK_API_KEY="<DeepSeek API key>"
-$env:BLOG_ROOT="<path-to-blog-repository>"
+Copy-Item .env.example .env
+```
+
+Configure local environment values in `.env`:
+
+```text
+DEEPSEEK_API_KEY=<DeepSeek API key>
+BLOG_ROOT=<path-to-blog-repository>
 ```
 
 `BLOG_ROOT` must point to the blog repository root. The backend reads:
@@ -116,10 +122,9 @@ uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 
 ## Local Verification
 
-Repository and tool checks:
+Repository and tool checks read `BLOG_ROOT` from `.env`:
 
 ```powershell
-$env:BLOG_ROOT="<path-to-blog-repository>"
 python -m scripts.check_blog_repository
 python -m scripts.check_search_posts
 python -m scripts.check_get_post
@@ -130,10 +135,9 @@ python -m scripts.check_blog_repository_errors
 python -m scripts.check_cors
 ```
 
-Agent validation requires `DEEPSEEK_API_KEY`:
+Agent validation requires `DEEPSEEK_API_KEY` in `.env`:
 
 ```powershell
-$env:DEEPSEEK_API_KEY="<DeepSeek API key>"
 python -m scripts.check_agent
 ```
 

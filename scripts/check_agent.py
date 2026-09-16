@@ -1,6 +1,5 @@
-import os
-
 from app.agent.agent import run_agent_with_trace
+from app.config import get_deepseek_api_key
 from scripts.blog_check_utils import (
     choose_post_and_search_keyword,
     require_post_slug,
@@ -8,9 +7,7 @@ from scripts.blog_check_utils import (
 )
 
 
-if not os.environ.get("DEEPSEEK_API_KEY"):
-    print("SKIPPED: DEEPSEEK_API_KEY is not configured")
-    raise SystemExit(0)
+get_deepseek_api_key()
 
 
 def check_case(question: str, expected_tool: str | None) -> list[str]:

@@ -1,6 +1,6 @@
-import os
-
 import requests
+
+from app.config import get_deepseek_api_key
 
 
 API_URL = "https://api.deepseek.com/chat/completions"
@@ -11,10 +11,7 @@ def create_chat_completion(
     messages: list[dict],
     tools: list[dict] | None = None,
 ) -> dict:
-    api_key = os.environ.get("DEEPSEEK_API_KEY")
-
-    if not api_key:
-        raise RuntimeError("DEEPSEEK_API_KEY 未配置")
+    api_key = get_deepseek_api_key()
 
     headers = {
         "Authorization": f"Bearer {api_key}",

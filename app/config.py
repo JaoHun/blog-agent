@@ -1,14 +1,35 @@
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
+
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+DOTENV_PATH = PROJECT_ROOT / ".env"
+
+
+def load_environment(env_file: Path | str = DOTENV_PATH) -> None:
+    load_dotenv(dotenv_path=env_file, override=False)
+
+
+load_environment()
+
+
+def get_required_env(name: str) -> str:
+    value = os.environ.get(name)
+
+    if value is None or not value.strip():
+        raise RuntimeError(f"{name} environment variable is not set")
+
+    return value.strip()
+
+
+def get_deepseek_api_key() -> str:
+    return get_required_env("DEEPSEEK_API_KEY")
+
 
 def get_blog_root() -> Path:
-    blog_root = os.environ.get("BLOG_ROOT")
-
-    if blog_root is None or not blog_root.strip():
-        raise RuntimeError("BLOG_ROOT environment variable is not set")
-
-    return Path(blog_root)
+    return Path(get_required_env("BLOG_ROOT"))
 
 
 def get_blog_posts_dir() -> Path:
